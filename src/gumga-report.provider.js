@@ -9,13 +9,18 @@ function GumgaReportProvider() {
 
             self._APILocation = self._APILocation || window.APILocation
             self._token = self._token || sessionStorage.getItem('token') || localStorage.getItem('token');
+            self._licenseKey = self._licenseKey || undefined;
 
             var Service = new GumgaRest(self._APILocation.apiLocation + '/api/gumgareport');
             Service.connectionLocal = self._APILocation.apiLocation + '/api/genericreport/reportconnection?gumgaToken=' + self._token;
 
             Service.getNew = () => {
                 return $http.get(self._APILocation.apiLocation + '/api/gumgareport/new');
-            }
+            };
+
+            Service.licenseKey = () => {
+                return self._licenseKey;
+            };
 
             return Service;
         }],
@@ -30,6 +35,12 @@ function GumgaReportProvider() {
         },
         getToken: function (token) {
             return this._token
+        },
+        setLicenseKey: function (key) {
+            this._licenseKey = key
+        },
+        getLicenseKey: function (key) {
+            return this._licenseKey
         }
     }
 }

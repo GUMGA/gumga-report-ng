@@ -164,6 +164,9 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
             changeSaveReport(designer);
             changeOnCreate(designer);
             designer.report = report;
+            if ($gumgaReportProvider.getLicenseKey()) {
+                designer.report.licenseKey = $gumgaReportProvider.getLicenseKey();
+            }
             designer.renderHtml('designer');
         }
     };
@@ -260,6 +263,7 @@ function GumgaReportProvider() {
 
             self._APILocation = self._APILocation || window.APILocation;
             self._token = self._token || sessionStorage.getItem('token') || localStorage.getItem('token');
+            self._licenseKey = self._licenseKey || undefined;
 
             var Service = new GumgaRest(self._APILocation.apiLocation + '/api/gumgareport');
             Service.connectionLocal = self._APILocation.apiLocation + '/api/genericreport/reportconnection?gumgaToken=' + self._token;
@@ -281,6 +285,12 @@ function GumgaReportProvider() {
         },
         getToken: function getToken(token) {
             return this._token;
+        },
+        setLicenseKey: function setLicenseKey(key) {
+            this._licenseKey = key;
+        },
+        getLicenseKey: function getLicenseKey(key) {
+            return this._licenseKey;
         }
     };
 }

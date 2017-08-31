@@ -89,6 +89,9 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
             changeSaveReport(designer);
             changeOnCreate(designer);
             designer.report = report;
+            if ($gumgaReportProvider.licenseKey()) {
+                designer.report.licenseKey = $gumgaReportProvider.licenseKey()
+            }
             designer.renderHtml('designer');
         }
     };

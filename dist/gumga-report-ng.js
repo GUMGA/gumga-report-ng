@@ -173,12 +173,15 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
 
     $scope.init = function (value) {
         $timeout(function () {
-            $gumgaReportProvider.getNew().then(function (response) {
-                ctrl.entity = {};
-                ctrl.entity.data = value || response.data;
-                $scope.configureEntity();
-            });
-        }, 2000);
+            if (value) {
+                ctrl.entity.data = value;
+            } else {
+                $gumgaReportProvider.getNew().then(function (response) {
+                    ctrl.entity.data = response.data;
+                });
+            }
+            $scope.configureEntity();
+        });
     };
 
     $scope.configureEntityViewer = function () {
@@ -193,13 +196,17 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
     };
 
     $scope.initViewer = function (value) {
+        console.log(value);
         $timeout(function () {
-            $gumgaReportProvider.getNew().then(function (response) {
-                ctrl.entity = {};
-                ctrl.entity.data = value || response.data;
-                $scope.configureEntityViewer();
-            });
-        }, 2000);
+            if (value) {
+                ctrl.entity.data = value;
+            } else {
+                $gumgaReportProvider.getNew().then(function (response) {
+                    ctrl.entity.data = response.data;
+                });
+            }
+            $scope.configureEntityViewer();
+        });
     };
 
     ctrl.updateReport = function (change) {
@@ -231,9 +238,8 @@ var template = __webpack_require__(3);
 var Report = {
     bindings: {
         viewer: '<?',
-        entity: '<?',
+        entity: '<',
         onSave: '&?',
-        height: '<?',
         options: '<?',
         databases: '<?'
     },
@@ -299,7 +305,7 @@ function GumgaReportProvider() {
     };
 }
 
-exports.default = angular.module('gumgaReport.provider', []).provider('$gumgaReport', GumgaReportProvider);
+exports.default = angular.module('gumga.report.provider', []).provider('$gumgaReport', GumgaReportProvider);
 
 /***/ }),
 /* 2 */
@@ -318,7 +324,7 @@ var _gumgaReport4 = _interopRequireDefault(_gumgaReport3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-module.exports = angular.module('ngGumgaReport', ['gumgaReport.provider']).component('gumgaReport', _gumgaReport2.default);
+module.exports = angular.module('gumga.report', ['gumga.report.provider']).component('gumgaReport', _gumgaReport2.default);
 
 /***/ }),
 /* 3 */

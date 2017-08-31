@@ -98,12 +98,15 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
 
     $scope.init = (value) => {
         $timeout(function() {
-            $gumgaReportProvider.getNew().then(function (response) {
-                ctrl.entity = {}
-                ctrl.entity.data = value || response.data
-                $scope.configureEntity()
-            })
-        },2000)
+            if (value) {
+                ctrl.entity.data = value
+            } else {
+                $gumgaReportProvider.getNew().then(function (response) {
+                    ctrl.entity.data = response.data
+                })
+            }
+            $scope.configureEntity()
+        })
     }
 
     $scope.configureEntityViewer = () => {
@@ -118,13 +121,17 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
     }
 
     $scope.initViewer = function (value) {
+        console.log(value)
         $timeout(function() {
-        $gumgaReportProvider.getNew().then(function (response) {
-            ctrl.entity = {}
-            ctrl.entity.data = value || response.data
+            if (value) {
+                ctrl.entity.data = value
+            } else {
+                $gumgaReportProvider.getNew().then(function (response) {
+                    ctrl.entity.data = response.data
+                })
+            }
             $scope.configureEntityViewer()
         })
-        },2000)
     };
 
     ctrl.updateReport = function (change) {
@@ -157,9 +164,8 @@ let template = require('./gumga-report.html');
 const Report = {
     bindings: {
         viewer: '<?',
-        entity: '<?',
+        entity: '<',
         onSave: '&?',
-        height: '<?',
         options: '<?',
         databases: '<?'
     },

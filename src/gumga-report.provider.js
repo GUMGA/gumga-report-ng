@@ -45,4 +45,4 @@ function GumgaReportProvider() {
     }
 }
 
-export default angular.module('gumgaReport.provider', []).provider('$gumgaReport', GumgaReportProvider);
+export default angular.module('gumga.report.provider', []).provider('$gumgaReport', GumgaReportProvider);

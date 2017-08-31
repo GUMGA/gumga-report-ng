@@ -1,6 +1,6 @@
 {
   "name": "gumga-report-ng",
-  "version": "0.0.1-ALPHA",
+  "version": "0.0.2-ALPHA",
   "description": "gumga-report-ng",
   "main": "./src/index.js",
   "directories": {
@@ -60,7 +60,8 @@
   "scripts": {
     "dev": "webpack-dev-server --config ./webpack.dev.config.js",
     "prod": "NODE_ENV=production webpack --config ./webpack.production.config.js && webpack --config ./webpack.production.bundle.config",
-    "test": "karma start ./webpack.karma.config.js"
+    "test": "karma start ./webpack.karma.config.js",
+    "doc": "node ./docs/create-doc.js"
   },
   "keywords": [
     "gumga",

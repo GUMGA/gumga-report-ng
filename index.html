@@ -37,10 +37,11 @@
 
 	<script type="text/javascript">
       var api = "http://192.168.112.227:8086/gileadeweb-api"
-      angular.module('app', ['ngGumgaReport', 'gumga.rest', 'gumga.controller'])
+      angular.module('app', ['gumga.report', 'gumga.rest', 'gumga.controller'])
       .config(function ($httpProvider, $gumgaReportProvider) {
         $gumgaReportProvider.setAPILocation({apiLocation:api})
         $gumgaReportProvider.setToken('eterno')
+				$gumgaReportProvider.setLicenseKey(null);
         $httpProvider.defaults.headers.common['gumgaToken'] = 'eterno'
       })
       .controller('ctrl', function($scope, $timeout, $http){
@@ -49,9 +50,11 @@
               $scope.gumgareport = resp.data
             })
         }
-				$http.get(api + '/api/gumgareport/9').then(function(resp) {
-              $scope.gumgareport = resp.data
-            })
+				$scope.gumgareport = {
+					data: {
+						id: null
+					}
+				}
 				$scope.options = {height: '940px'}
 				$scope.altera = function(height) {
 					console.log(height)
@@ -59,7 +62,7 @@
 				}
 				$scope.mostra = function(value) {
 					console.log("aqui",value)
-				} 
+				}
       })
 
       

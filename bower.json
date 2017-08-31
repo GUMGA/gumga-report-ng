@@ -1,0 +1,24 @@
+{
+  "name": "gumga-report-ng",
+  "version": "0.0.1-ALPHA",
+  "description": "gumga-report-ng",
+  "main": "./src/index.js",
+  "authors": [
+    "Faype Developers S/A"
+  ],
+  "license": "LGPL-3.0",
+  "keywords": [
+    "gumga",
+    "controller",
+    "angular",
+    "1.x"
+  ],
+  "homepage": "https://github.com/GUMGA/gumga-report-ng",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

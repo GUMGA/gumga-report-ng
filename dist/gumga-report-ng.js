@@ -164,8 +164,8 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
             changeSaveReport(designer);
             changeOnCreate(designer);
             designer.report = report;
-            if ($gumgaReportProvider.getLicenseKey()) {
-                designer.report.licenseKey = $gumgaReportProvider.getLicenseKey();
+            if ($gumgaReportProvider.licenseKey()) {
+                designer.report.licenseKey = $gumgaReportProvider.licenseKey();
             }
             designer.renderHtml('designer');
         }
@@ -270,6 +270,10 @@ function GumgaReportProvider() {
 
             Service.getNew = function () {
                 return $http.get(self._APILocation.apiLocation + '/api/gumgareport/new');
+            };
+
+            Service.licenseKey = function () {
+                return self._licenseKey;
             };
 
             return Service;

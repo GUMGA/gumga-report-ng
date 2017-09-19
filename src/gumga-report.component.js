@@ -1,7 +1,6 @@
 
 function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaReportProvider, $attrs) {
     let ctrl = this;
-
     var headerfooter = {};
     var variable = {};
 
@@ -10,15 +9,64 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
             fullScreenMode: false
         },
         height: "940px"
+    };
+
+
+    let changeQuery = (query, filter) => {
+        var queryBegin = '',
+            queryEnd = '',
+            index;
+
+        var where = '';
+        if (!query.match(/where/i)) {
+            where = ' where 1=1 ';
+        }
+
+        if (query.match(/group by/i)) {
+            index = query.match(/group by/i).index;
+            queryBegin = query.substring(0, index - 1);
+            queryEnd = query.substring(index, query.length);
+        } else if (query.match(/order by/i)) {
+            index = query.match(/order by/i).index;
+            queryBegin = query.substring(0, index - 1);
+            queryEnd = query.substring(index, query.length);
+        } else {
+            index = query.length;
+            queryBegin = query.substring(0, index);
+        }
+
+        return queryBegin + where + filter + (ctrl.additionalFilter ? ` and (${ctrl.additionalFilter}) ` : "") + queryEnd;
     }
+
 
     let changeOnCreate = (designer) => {
         designer.onCreateReport = function (event) {
             if (headerfooter && headerfooter.jsonReport) {
                 var report = new $window.Stimulsoft.Report.StiReport();
                 event.isWizardUsed = false;
-                event.report = entity.data.name.definition;
-                event.report.reportFile = entity.data.name;
+                event.report = entity.name.definition;
+                event.report.reportFile = entity.name;
+            }
+        };
+    };
+
+    let changeOnBeginProcessData = (viewer) => {
+        viewer.onBeginProcessData = function (event) {
+            if ($gumgaReportProvider.isEnableOi()) {
+                //TODO
+                // let reservedKeys = ["inner", "join", "where", "left", "right", "union"]
+                // let match = event.queryString.match(/from.*where/)
+                // let alias = "";
+                // if (match && match[0]) {
+                //     alias = match.split(" ")[2]
+                //     if (reservedKeys.includes(alias)) {
+                //         alias = match.split(" ")[1]
+                //     } else {
+                //         alias = alias + "."
+                //     }
+                // }
+                // let filter = (ctrl.entity ? ` and (oi is null or oi like '${ctrl.entity.id} %')` : '');
+                // event.queryString = changeQuery(event.queryString, filter);
             }
         };
     }
@@ -29,9 +77,9 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
             event.report.reportName = event.fileName;
             event.report.reportAlias = event.fileName;
             var jsonStr = event.report.saveToJsonString();
-            ctrl.entity.data.name = event.fileName;
-            ctrl.entity.data.definition = jsonStr;
-            $gumgaReportProvider.save(ctrl.entity.data)
+            ctrl.entity.name = event.fileName;
+            ctrl.entity.definition = jsonStr;
+            $gumgaReportProvider.save(ctrl.entity)
                 .then(response => {
                     if (ctrl.onSave) {
                         ctrl.onSave({ $value: response.data.data })
@@ -75,11 +123,14 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
 
             var designer = new $window.Stimulsoft.Designer.StiDesigner(defaultOptions, 'StiDesigner', false);
             var report = new $window.Stimulsoft.Report.StiReport();
-            if (ctrl.entity.data.id) {
-                report.load(ctrl.entity.data.definition);
+            if (ctrl.entity.id) {
+                report.load(ctrl.entity.definition);
             } else {
 
+                //url=jdbc:mysql://localhost:3306/security?zeroDateTimeBehavior=convertToNull; user = root; password = senha;
                 var database = new Stimulsoft.Report.Dictionary.StiMySqlDatabase("Security Local", "", "jdbc:mysql://localhost:3306/security?zeroDateTimeBehavior=convertToNull; user = root; password = senha;", false);
+                // report.dictionary.variables.insert('ola', '123'); TODO
+
                 report.dictionary.databases.clear();
                 report.dictionary.databases.add(database);
                 report.dictionary.synchronize();
@@ -88,21 +139,22 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
             report.dictionary.variable = variable;
             changeSaveReport(designer);
             changeOnCreate(designer);
+            changeOnBeginProcessData(designer);
             designer.report = report;
             if ($gumgaReportProvider.licenseKey()) {
-                designer.report.licenseKey = $gumgaReportProvider.licenseKey()
+                $window.Stimulsoft.Base.StiLicense.key = $gumgaReportProvider.licenseKey()
             }
-            designer.renderHtml('designer');
+            designer.renderHtml('designer')
         }
     };
 
     $scope.init = (value) => {
-        $timeout(function() {
+        $timeout(function () {
             if (value) {
-                ctrl.entity.data = value
+                ctrl.entity = value
             } else {
                 $gumgaReportProvider.getNew().then(function (response) {
-                    ctrl.entity.data = response.data
+                    ctrl.entity = response.data
                 })
             }
             $scope.configureEntity()
@@ -114,20 +166,21 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
             StiOptions.WebServer.url = $gumgaReportProvider.connectionLocal;
             var viewer = new $window.Stimulsoft.Viewer.StiViewer(null, 'StiViewer', false);
             var report = new $window.Stimulsoft.Report.StiReport();
-            report.load(ctrl.entity.data.definition);
+            report.load(ctrl.entity.definition);
+            report.dictionary.variable = ctrl.variables;
+            changeOnBeginProcessData(viewer);
             viewer.report = report;
             viewer.renderHtml('viewer');
         }
     }
 
     $scope.initViewer = function (value) {
-        console.log(value)
-        $timeout(function() {
+        $timeout(function () {
             if (value) {
-                ctrl.entity.data = value
+                ctrl.entity = value
             } else {
                 $gumgaReportProvider.getNew().then(function (response) {
-                    ctrl.entity.data = response.data
+                    ctrl.entity = response.data
                 })
             }
             $scope.configureEntityViewer()
@@ -144,7 +197,7 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
 
     ctrl.$onChanges = function (change) {
         if (change.viewer && change.viewer.currentValue && ctrl.entity) {
-            ctrl.updateReport(ctrl.entity.data)
+            ctrl.updateReport(ctrl.entity)
         }
 
         if (change.entity && (change.entity.currentValue && change.entity.currentValue.id)) {
@@ -167,7 +220,8 @@ const Report = {
         entity: '<',
         onSave: '&?',
         options: '<?',
-        databases: '<?'
+        databases: '<?',
+        additionalFilter: '<?'
     },
     templateUrl: template,
     controller: gumgaReports

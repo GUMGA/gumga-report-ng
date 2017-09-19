@@ -7,9 +7,14 @@ function GumgaReportProvider() {
         $get: ['GumgaRest', '$http', function (GumgaRest, $http) {
             var self = this;
 
+            self._isEmpty = (value) => {
+                return value == undefined || value == null
+            }
+
             self._APILocation = self._APILocation || window.APILocation
             self._token = self._token || sessionStorage.getItem('token') || localStorage.getItem('token');
             self._licenseKey = self._licenseKey || undefined;
+            self._enableOi = self._isEmpty(self._enableOi) || self._enableOi  
 
             var Service = new GumgaRest(self._APILocation.apiLocation + '/api/gumgareport');
             Service.connectionLocal = self._APILocation.apiLocation + '/api/genericreport/reportconnection?gumgaToken=' + self._token;
@@ -20,6 +25,10 @@ function GumgaReportProvider() {
 
             Service.licenseKey = () => {
                 return self._licenseKey;
+            };
+
+            Service.isEnableOi = () => {
+                return self._enableOi;
             };
 
             return Service;
@@ -41,6 +50,12 @@ function GumgaReportProvider() {
         },
         getLicenseKey: function (key) {
             return this._licenseKey
+        },
+        enableOi: function () {
+            this._enableOi = true
+        },
+        disableOi: function () {
+            this._enableOi = false
         }
     }
 }

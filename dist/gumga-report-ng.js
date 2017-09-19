@@ -79,7 +79,6 @@ Object.defineProperty(exports, "__esModule", {
 
 function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaReportProvider, $attrs) {
     var ctrl = this;
-
     var headerfooter = {};
     var variable = {};
 
@@ -90,13 +89,60 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
         height: "940px"
     };
 
+    var changeQuery = function changeQuery(query, filter) {
+        var queryBegin = '',
+            queryEnd = '',
+            index;
+
+        var where = '';
+        if (!query.match(/where/i)) {
+            where = ' where 1=1 ';
+        }
+
+        if (query.match(/group by/i)) {
+            index = query.match(/group by/i).index;
+            queryBegin = query.substring(0, index - 1);
+            queryEnd = query.substring(index, query.length);
+        } else if (query.match(/order by/i)) {
+            index = query.match(/order by/i).index;
+            queryBegin = query.substring(0, index - 1);
+            queryEnd = query.substring(index, query.length);
+        } else {
+            index = query.length;
+            queryBegin = query.substring(0, index);
+        }
+
+        return queryBegin + where + filter + (ctrl.additionalFilter ? ' and (' + ctrl.additionalFilter + ') ' : "") + queryEnd;
+    };
+
     var changeOnCreate = function changeOnCreate(designer) {
         designer.onCreateReport = function (event) {
             if (headerfooter && headerfooter.jsonReport) {
                 var report = new $window.Stimulsoft.Report.StiReport();
                 event.isWizardUsed = false;
-                event.report = entity.data.name.definition;
-                event.report.reportFile = entity.data.name;
+                event.report = entity.name.definition;
+                event.report.reportFile = entity.name;
+            }
+        };
+    };
+
+    var changeOnBeginProcessData = function changeOnBeginProcessData(viewer) {
+        viewer.onBeginProcessData = function (event) {
+            if ($gumgaReportProvider.isEnableOi()) {
+                //TODO
+                // let reservedKeys = ["inner", "join", "where", "left", "right", "union"]
+                // let match = event.queryString.match(/from.*where/)
+                // let alias = "";
+                // if (match && match[0]) {
+                //     alias = match.split(" ")[2]
+                //     if (reservedKeys.includes(alias)) {
+                //         alias = match.split(" ")[1]
+                //     } else {
+                //         alias = alias + "."
+                //     }
+                // }
+                // let filter = (ctrl.entity ? ` and (oi is null or oi like '${ctrl.entity.id} %')` : '');
+                // event.queryString = changeQuery(event.queryString, filter);
             }
         };
     };
@@ -106,9 +152,9 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
             event.report.reportName = event.fileName;
             event.report.reportAlias = event.fileName;
             var jsonStr = event.report.saveToJsonString();
-            ctrl.entity.data.name = event.fileName;
-            ctrl.entity.data.definition = jsonStr;
-            $gumgaReportProvider.save(ctrl.entity.data).then(function (response) {
+            ctrl.entity.name = event.fileName;
+            ctrl.entity.definition = jsonStr;
+            $gumgaReportProvider.save(ctrl.entity).then(function (response) {
                 if (ctrl.onSave) {
                     ctrl.onSave({ $value: response.data.data });
                 }
@@ -150,11 +196,14 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
 
             var designer = new $window.Stimulsoft.Designer.StiDesigner(defaultOptions, 'StiDesigner', false);
             var report = new $window.Stimulsoft.Report.StiReport();
-            if (ctrl.entity.data.id) {
-                report.load(ctrl.entity.data.definition);
+            if (ctrl.entity.id) {
+                report.load(ctrl.entity.definition);
             } else {
 
+                //url=jdbc:mysql://localhost:3306/security?zeroDateTimeBehavior=convertToNull; user = root; password = senha;
                 var database = new Stimulsoft.Report.Dictionary.StiMySqlDatabase("Security Local", "", "jdbc:mysql://localhost:3306/security?zeroDateTimeBehavior=convertToNull; user = root; password = senha;", false);
+                // report.dictionary.variables.insert('ola', '123'); TODO
+
                 report.dictionary.databases.clear();
                 report.dictionary.databases.add(database);
                 report.dictionary.synchronize();
@@ -163,9 +212,10 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
             report.dictionary.variable = variable;
             changeSaveReport(designer);
             changeOnCreate(designer);
+            changeOnBeginProcessData(designer);
             designer.report = report;
             if ($gumgaReportProvider.licenseKey()) {
-                designer.report.licenseKey = $gumgaReportProvider.licenseKey();
+                $window.Stimulsoft.Base.StiLicense.key = $gumgaReportProvider.licenseKey();
             }
             designer.renderHtml('designer');
         }
@@ -174,10 +224,10 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
     $scope.init = function (value) {
         $timeout(function () {
             if (value) {
-                ctrl.entity.data = value;
+                ctrl.entity = value;
             } else {
                 $gumgaReportProvider.getNew().then(function (response) {
-                    ctrl.entity.data = response.data;
+                    ctrl.entity = response.data;
                 });
             }
             $scope.configureEntity();
@@ -189,20 +239,21 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
             StiOptions.WebServer.url = $gumgaReportProvider.connectionLocal;
             var viewer = new $window.Stimulsoft.Viewer.StiViewer(null, 'StiViewer', false);
             var report = new $window.Stimulsoft.Report.StiReport();
-            report.load(ctrl.entity.data.definition);
+            report.load(ctrl.entity.definition);
+            report.dictionary.variable = ctrl.variables;
+            changeOnBeginProcessData(viewer);
             viewer.report = report;
             viewer.renderHtml('viewer');
         }
     };
 
     $scope.initViewer = function (value) {
-        console.log(value);
         $timeout(function () {
             if (value) {
-                ctrl.entity.data = value;
+                ctrl.entity = value;
             } else {
                 $gumgaReportProvider.getNew().then(function (response) {
-                    ctrl.entity.data = response.data;
+                    ctrl.entity = response.data;
                 });
             }
             $scope.configureEntityViewer();
@@ -219,7 +270,7 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
 
     ctrl.$onChanges = function (change) {
         if (change.viewer && change.viewer.currentValue && ctrl.entity) {
-            ctrl.updateReport(ctrl.entity.data);
+            ctrl.updateReport(ctrl.entity);
         }
 
         if (change.entity && change.entity.currentValue && change.entity.currentValue.id) {
@@ -241,7 +292,8 @@ var Report = {
         entity: '<',
         onSave: '&?',
         options: '<?',
-        databases: '<?'
+        databases: '<?',
+        additionalFilter: '<?'
     },
     templateUrl: template,
     controller: gumgaReports
@@ -267,9 +319,14 @@ function GumgaReportProvider() {
         $get: ['GumgaRest', '$http', function (GumgaRest, $http) {
             var self = this;
 
+            self._isEmpty = function (value) {
+                return value == undefined || value == null;
+            };
+
             self._APILocation = self._APILocation || window.APILocation;
             self._token = self._token || sessionStorage.getItem('token') || localStorage.getItem('token');
             self._licenseKey = self._licenseKey || undefined;
+            self._enableOi = self._isEmpty(self._enableOi) || self._enableOi;
 
             var Service = new GumgaRest(self._APILocation.apiLocation + '/api/gumgareport');
             Service.connectionLocal = self._APILocation.apiLocation + '/api/genericreport/reportconnection?gumgaToken=' + self._token;
@@ -280,6 +337,10 @@ function GumgaReportProvider() {
 
             Service.licenseKey = function () {
                 return self._licenseKey;
+            };
+
+            Service.isEnableOi = function () {
+                return self._enableOi;
             };
 
             return Service;
@@ -301,6 +362,12 @@ function GumgaReportProvider() {
         },
         getLicenseKey: function getLicenseKey(key) {
             return this._licenseKey;
+        },
+        enableOi: function enableOi() {
+            this._enableOi = true;
+        },
+        disableOi: function disableOi() {
+            this._enableOi = false;
         }
     };
 }

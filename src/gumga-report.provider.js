@@ -14,10 +14,12 @@ function GumgaReportProvider() {
             self._APILocation = self._APILocation || window.APILocation
             self._token = self._token || sessionStorage.getItem('token') || localStorage.getItem('token');
             self._licenseKey = self._licenseKey || undefined;
-            self._enableOi = self._isEmpty(self._enableOi) || self._enableOi  
+            self._enableOi = self._isEmpty(self._enableOi) || self._enableOi
+            self._urlGumgaReport = self._urlGumgaReport || self._APILocation.apiLocation + '/api/gumgareport';
+            self._urlReportConnection = self._urlReportConnection || self._APILocation.apiLocation + '/api/genericreport/reportconnection?gumgaToken=' + self._token;
 
-            var Service = new GumgaRest(self._APILocation.apiLocation + '/api/gumgareport');
-            Service.connectionLocal = self._APILocation.apiLocation + '/api/genericreport/reportconnection?gumgaToken=' + self._token;
+            var Service = new GumgaRest(self._urlGumgaReport);
+            Service.connectionLocal = self._urlReportConnection;
 
             Service.getNew = () => {
                 return $http.get(self._APILocation.apiLocation + '/api/gumgareport/new');
@@ -39,11 +41,29 @@ function GumgaReportProvider() {
         getAPILocation: function (api) {
             return this._APILocation
         },
+        setLocalizationLang: function (locationLang, description) {
+            Stimulsoft.Base.Localization.StiLocalization
+            .addLocalizationFile(locationLang, false, description || "Portuguese (Brazil)");
+            Stimulsoft.Base.Localization.StiLocalization
+            .setLocalizationFile(locationLang, true);
+        },
         setToken: function (token) {
             this._token = token
         },
         getToken: function (token) {
             return this._token
+        },
+        setUrlGumgaReport: function (urlGumgaReport) {
+            this._urlGumgaReport = urlGumgaReport
+        },
+        getUrlGumgaReport: function () {
+            return this._urlGumgaReport
+        },
+        setUrlReportConnection: function (urlReportConnection) {
+            this._urlReportConnection = urlReportConnection
+        },
+        getUrlReportConnection: function () {
+            return this._urlReportConnection
         },
         setLicenseKey: function (key) {
             this._licenseKey = key

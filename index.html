@@ -38,14 +38,18 @@
 
 <script type="text/javascript">
 //    var api = "http://192.168.112.227:8087/gileadeweb-api"
-    var api = "http://192.168.112.227:8086/gileadeweb-api"
+    var api = "http://192.168.112.217:8085/gileadeweb-api"
     angular.module('app', ['gumga.report', 'gumga.rest', 'gumga.controller'])
         .config(function ($httpProvider, $gumgaReportProvider) {
-            $gumgaReportProvider.setAPILocation({apiLocation: api})
+            $httpProvider.defaults.headers.common['gumgaToken'] = 'eterno'
+//            $gumgaReportProvider.setAPILocation({apiLocation: api})
+//            $gumgaReportProvider.setLicenseKey();
             $gumgaReportProvider.setToken('eterno')
             $gumgaReportProvider.enableOi();
-            //$gumgaReportProvider.setLicenseKey();
-            $httpProvider.defaults.headers.common['gumgaToken'] = 'eterno'
+
+            $gumgaReportProvider.setLocalizationLang('dist/stimulsoft/langs/pt-BR.xml');
+            $gumgaReportProvider.setUrlReportConnection(api + '/api/genericreport/reportconnection?gumgaToken=eterno');
+            $gumgaReportProvider.setUrlGumgaReport(api + '/api/gumgareport?gumgaToken=eterno');
         })
         .controller('ctrl', function ($scope, $timeout, $http) {
             $scope.id = 1

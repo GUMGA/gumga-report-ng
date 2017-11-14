@@ -1,6 +1,6 @@
 {
   "name": "gumga-report-ng",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "gumga-report-ng",
   "main": "./src/index.js",
   "authors": [

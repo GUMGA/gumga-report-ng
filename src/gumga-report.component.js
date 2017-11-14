@@ -126,13 +126,13 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
             if (ctrl.entity.id) {
                 report.load(ctrl.entity.definition);
             } else {
-
-                //url=jdbc:mysql://localhost:3306/security?zeroDateTimeBehavior=convertToNull; user = root; password = senha;
-                var database = new Stimulsoft.Report.Dictionary.StiMySqlDatabase("Security Local", "", "jdbc:mysql://localhost:3306/security?zeroDateTimeBehavior=convertToNull; user = root; password = senha;", false);
+                var databaseMysqlExample = new Stimulsoft.Report.Dictionary.StiMySqlDatabase("Security MySQL", "", "url=jdbc:mysql://localhost:3306/security?zeroDateTimeBehavior=convertToNull; user = root; password = senha;", false);
+                var databaseOracleExample = new Stimulsoft.Report.Dictionary.StiOracleDatabase("Security Oracle", "", "url=jdbc:oracle:thin:@localhost:1521/orcl;user = root;password = senha;", false);
                 // report.dictionary.variables.insert('ola', '123'); TODO
 
                 report.dictionary.databases.clear();
-                report.dictionary.databases.add(database);
+                report.dictionary.databases.add(databaseMysqlExample);
+                report.dictionary.databases.add(databaseOracleExample);
                 report.dictionary.synchronize();
             }
 

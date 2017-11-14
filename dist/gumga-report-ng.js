@@ -199,13 +199,13 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
             if (ctrl.entity.id) {
                 report.load(ctrl.entity.definition);
             } else {
-
-                //url=jdbc:mysql://localhost:3306/security?zeroDateTimeBehavior=convertToNull; user = root; password = senha;
-                var database = new Stimulsoft.Report.Dictionary.StiMySqlDatabase("Security Local", "", "jdbc:mysql://localhost:3306/security?zeroDateTimeBehavior=convertToNull; user = root; password = senha;", false);
+                var databaseMysqlExample = new Stimulsoft.Report.Dictionary.StiMySqlDatabase("Security MySQL", "", "url=jdbc:mysql://localhost:3306/security?zeroDateTimeBehavior=convertToNull; user = root; password = senha;", false);
+                var databaseOracleExample = new Stimulsoft.Report.Dictionary.StiOracleDatabase("Security Oracle", "", "url=jdbc:oracle:thin:@localhost:1521/orcl;user = root;password = senha;", false);
                 // report.dictionary.variables.insert('ola', '123'); TODO
 
                 report.dictionary.databases.clear();
-                report.dictionary.databases.add(database);
+                report.dictionary.databases.add(databaseMysqlExample);
+                report.dictionary.databases.add(databaseOracleExample);
                 report.dictionary.synchronize();
             }
 
@@ -327,9 +327,11 @@ function GumgaReportProvider() {
             self._token = self._token || sessionStorage.getItem('token') || localStorage.getItem('token');
             self._licenseKey = self._licenseKey || undefined;
             self._enableOi = self._isEmpty(self._enableOi) || self._enableOi;
+            self._urlGumgaReport = self._urlGumgaReport || self._APILocation.apiLocation + '/api/gumgareport';
+            self._urlReportConnection = self._urlReportConnection || self._APILocation.apiLocation + '/api/genericreport/reportconnection?gumgaToken=' + self._token;
 
-            var Service = new GumgaRest(self._APILocation.apiLocation + '/api/gumgareport');
-            Service.connectionLocal = self._APILocation.apiLocation + '/api/genericreport/reportconnection?gumgaToken=' + self._token;
+            var Service = new GumgaRest(self._urlGumgaReport);
+            Service.connectionLocal = self._urlReportConnection;
 
             Service.getNew = function () {
                 return $http.get(self._APILocation.apiLocation + '/api/gumgareport/new');
@@ -351,11 +353,27 @@ function GumgaReportProvider() {
         getAPILocation: function getAPILocation(api) {
             return this._APILocation;
         },
+        setLocalizationLang: function setLocalizationLang(locationLang, description) {
+            Stimulsoft.Base.Localization.StiLocalization.addLocalizationFile(locationLang, false, description || "Portuguese (Brazil)");
+            Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile(locationLang, true);
+        },
         setToken: function setToken(token) {
             this._token = token;
         },
         getToken: function getToken(token) {
             return this._token;
+        },
+        setUrlGumgaReport: function setUrlGumgaReport(urlGumgaReport) {
+            this._urlGumgaReport = urlGumgaReport;
+        },
+        getUrlGumgaReport: function getUrlGumgaReport() {
+            return this._urlGumgaReport;
+        },
+        setUrlReportConnection: function setUrlReportConnection(urlReportConnection) {
+            this._urlReportConnection = urlReportConnection;
+        },
+        getUrlReportConnection: function getUrlReportConnection() {
+            return this._urlReportConnection;
         },
         setLicenseKey: function setLicenseKey(key) {
             this._licenseKey = key;

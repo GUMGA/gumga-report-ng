@@ -38,7 +38,7 @@
 
 <script type="text/javascript">
 //    var api = "http://192.168.112.227:8087/gileadeweb-api"
-    var api = "http://192.168.112.217:8085/gileadeweb-api"
+    var api = "http://localhost:8080/reportservice-api"
     angular.module('app', ['gumga.report', 'gumga.rest', 'gumga.controller'])
         .config(function ($httpProvider, $gumgaReportProvider) {
             $httpProvider.defaults.headers.common['gumgaToken'] = 'eterno'

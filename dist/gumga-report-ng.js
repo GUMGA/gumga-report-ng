@@ -328,13 +328,22 @@ function GumgaReportProvider() {
             self._licenseKey = self._licenseKey || undefined;
             self._enableOi = self._isEmpty(self._enableOi) || self._enableOi;
             self._urlGumgaReport = self._urlGumgaReport || self._APILocation.apiLocation + '/api/gumgareport';
-            self._urlReportConnection = self._urlReportConnection || self._APILocation.apiLocation + '/api/genericreport/reportconnection?gumgaToken=' + self._token;
+            self._urlReportConnection = self._urlReportConnection || self._APILocation.apiLocation + '/api/genericreport/reportconnection';
+
+            if (self._token) {
+                self._urlGumgaReport = self._urlGumgaReport.concat('?gumgaToken=' + self._token);
+                self._urlReportConnection = self._urlReportConnection.concat('?gumgaToken=' + self._token);
+            }
 
             var Service = new GumgaRest(self._urlGumgaReport);
             Service.connectionLocal = self._urlReportConnection;
 
+            Service.getUrlGumgaReport = function () {
+                return self._urlGumgaReport.split('?');
+            };
+
             Service.getNew = function () {
-                return $http.get(self._APILocation.apiLocation + '/api/gumgareport/new');
+                return $http.get(Service.getUrlGumgaReport() + "/new" + (self._token ? '?gumgaToken=' + self._token : ''));
             };
 
             Service.licenseKey = function () {

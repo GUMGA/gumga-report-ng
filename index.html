@@ -38,23 +38,36 @@
 
 <script type="text/javascript">
 //    var api = "http://192.168.112.227:8087/gileadeweb-api"
-    var api = "http://localhost:8080/reportservice-api"
+    var APILocation = {
+        apiLocation: "http://localhost:8081/reportservice-api"
+    }
+    window.APILocation = APILocation
     angular.module('app', ['gumga.report', 'gumga.rest', 'gumga.controller'])
         .config(function ($httpProvider, $gumgaReportProvider) {
-            $httpProvider.defaults.headers.common['gumgaToken'] = 'eterno'
+
+            $httpProvider.interceptors.push(function() {
+                return {
+                    'request': function(config) {
+                        $gumgaReportProvider.setToken('batista');
+                        console.log("oila")
+                        config.headers['gumgaToken'] = 'batista';
+                        return config;
+                    }
+                }
+            });
+
+//            $gumgaReportProvider.enableOi();
 //            $gumgaReportProvider.setAPILocation({apiLocation: api})
 //            $gumgaReportProvider.setLicenseKey();
-            $gumgaReportProvider.setToken('eterno')
-            $gumgaReportProvider.enableOi();
 
-            $gumgaReportProvider.setLocalizationLang('dist/stimulsoft/langs/pt-BR.xml');
-            $gumgaReportProvider.setUrlReportConnection(api + '/api/genericreport/reportconnection?gumgaToken=eterno');
-            $gumgaReportProvider.setUrlGumgaReport(api + '/api/gumgareport?gumgaToken=eterno');
+//            $gumgaReportProvider.setLocalizationLang('dist/stimulsoft/langs/pt-BR.xml');
+//            $gumgaReportProvider.setUrlReportConnection(api + '/api/genericreport/reportconnection');
+//            $gumgaReportProvider.setUrlGumgaReport(api + '/api/gumgareport');
         })
         .controller('ctrl', function ($scope, $timeout, $http) {
             $scope.id = 1
             $scope.carrega1 = function () {
-                $http.get(api + '/api/gumgareport/' + $scope.id).then(function (resp) {
+                $http.get(window.APILocation.apiLocation + '/api/gumgareport/' + $scope.id).then(function (resp) {
                     $scope.gumgareport.data = resp.data
                 })
             }
@@ -65,7 +78,6 @@
             }
             $scope.options = {height: '940px'}
             $scope.altera = function (height) {
-                console.log(height)
                 $scope.options.height = height
             }
             $scope.mostra = function (value) {

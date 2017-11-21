@@ -92,11 +92,16 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
         StiOptions.WebServer.url = $gumgaReportProvider.connectionLocal;
         StiOptions.Services._databases = [];
         if (!ctrl.databases) {
-            ctrl.databases = 'postgresql,mysql,oracle'
+            ctrl.databases = 'postgresql,mysql,oracle,json,xml,csv,excel'
         }
         if (ctrl.databases.includes('postgresql')) StiOptions.Services._databases.add(new Stimulsoft.Report.Dictionary.StiPostgreSQLDatabase());
         if (ctrl.databases.includes('mysql')) StiOptions.Services._databases.add(new Stimulsoft.Report.Dictionary.StiMySqlDatabase());
         if (ctrl.databases.includes('oracle')) StiOptions.Services._databases.add(new Stimulsoft.Report.Dictionary.StiOracleDatabase());
+        if (ctrl.databases.includes('json')) StiOptions.Services._databases.add(new Stimulsoft.Report.Dictionary.StiJsonDatabase());
+        if (ctrl.databases.includes('xml')) StiOptions.Services._databases.add(new Stimulsoft.Report.Dictionary.StiXmlDatabase());
+        if (ctrl.databases.includes('csv')) StiOptions.Services._databases.add(new Stimulsoft.Report.Dictionary.StiCsvDatabase());
+        if (ctrl.databases.includes('excel')) StiOptions.Services._databases.add(new Stimulsoft.Report.Dictionary.StiExcelDatabase());
+
     }
 
 
@@ -128,9 +133,11 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
             } else {
                 var databaseMysqlExample = new Stimulsoft.Report.Dictionary.StiMySqlDatabase("Security MySQL", "", "url=jdbc:mysql://localhost:3306/security?zeroDateTimeBehavior=convertToNull; user = root; password = senha;", false);
                 var databaseOracleExample = new Stimulsoft.Report.Dictionary.StiOracleDatabase("Security Oracle", "", "url=jdbc:oracle:thin:@localhost:1521/orcl;user = root;password = senha;", false);
-                // report.dictionary.variables.insert('ola', '123'); TODO
 
                 report.dictionary.databases.clear();
+                var parameter = new Stimulsoft.Report.Dictionary.StiVariable("Gumga Examples", "oi", "oi", "Organization ID", Stimulsoft.System.Type.valueOf(), "[[oi]]", true, Stimulsoft.Report.Dictionary.StiVariableInitBy.Value, false);
+                report.dictionary.variables.add(parameter)
+
                 report.dictionary.databases.add(databaseMysqlExample);
                 report.dictionary.databases.add(databaseOracleExample);
                 report.dictionary.synchronize();

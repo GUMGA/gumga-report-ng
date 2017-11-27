@@ -138,12 +138,33 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
                 var parameter = new Stimulsoft.Report.Dictionary.StiVariable("Gumga Examples", "oi", "oi", "Organization ID", Stimulsoft.System.Type.valueOf(), "[[oi]]", true, Stimulsoft.Report.Dictionary.StiVariableInitBy.Value, false);
                 report.dictionary.variables.add(parameter)
 
+                if (ctrl.dictionaryDatabases) {
+                    if (ctrl.dictionaryDatabases instanceof Array) {
+                        ctrl.dictionaryDatabases
+                            .forEach(obj => {
+                                report.dictionary.databases.add(obj);
+                            })
+                    } else {
+                        report.dictionary.databases.add(ctrl.dictionaryDatabases);
+                    }
+                }
+
+                if (ctrl.dictionaryVariables) {
+                    if (ctrl.dictionaryVariables instanceof Array) {
+                        ctrl.dictionaryVariables
+                            .forEach(obj => {
+                                report.dictionary.variables.add(obj);
+                            })
+                    } else {
+                        report.dictionary.variables.add(ctrl.dictionaryVariables);
+                    }
+                }
+
                 report.dictionary.databases.add(databaseMysqlExample);
                 report.dictionary.databases.add(databaseOracleExample);
                 report.dictionary.synchronize();
             }
 
-            report.dictionary.variable = variable;
             changeSaveReport(designer);
             changeOnCreate(designer);
             changeOnBeginProcessData(designer);
@@ -228,7 +249,9 @@ const Report = {
         onSave: '&?',
         options: '<?',
         databases: '<?',
-        additionalFilter: '<?'
+        additionalFilter: '<?',
+        dictionaryDatabases: '<?',
+        dictionaryVariables: '<?'
     },
     templateUrl: template,
     controller: gumgaReports

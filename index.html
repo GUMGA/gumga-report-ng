@@ -84,6 +84,15 @@
                 console.log("aqui", value)
             }
             $scope.additionalFilter = 'id < 10'
+            $scope.dictionaryDatabases = [
+                new Stimulsoft.Report.Dictionary.StiMySqlDatabase("teste MySQL", "", "url=jdbc:mysql://localhost:3306/security?zeroDateTimeBehavior=convertToNull; user = root; password = senha;", false)
+            ]
+
+
+            $scope.dictionaryVariables = [
+                new Stimulsoft.Report.Dictionary.StiVariable("Gumga Examples", "teste", "teste", "teste ID", Stimulsoft.System.Type.valueOf(), "[[teste]]", true, Stimulsoft.Report.Dictionary.StiVariableInitBy.Value, false),
+                new Stimulsoft.Report.Dictionary.StiVariable("Outro Examples", "teste2", "teste2", "teste2 ID", Stimulsoft.System.Type.valueOf(), "[[teste2]]", true, Stimulsoft.Report.Dictionary.StiVariableInitBy.Value, false)
+            ]
         })
 
 
@@ -98,6 +107,8 @@
 </header>
 <main>
     <gumga-report entity="gumgareport.data" viewer="visualizacao" additional-filter="additionalFilter" on-save="mostra($value)"
+                  dictionary-databases="dictionaryDatabases"
+                  dictionary-variables="dictionaryVariables"
                   options="options"></gumga-report>
 </main>
 

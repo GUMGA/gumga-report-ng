@@ -24,7 +24,7 @@ angular.module('app', ['gumga.report', 'gumga.rest', 'gumga.controller'])
 
   })
   .config(function ($httpProvider, $gumgaReportProvider) {
-        $gumgaReportProvider.setAPILocation({apiLocation:'http://45.33.97.32/reportservice-api'})
+        $gumgaReportProvider.setAPILocation({apiLocation:'https://45.33.97.32/reportservice-api'})
         $gumgaReportProvider.setToken('testereport')
         $gumgaReportProvider.setLicenseKey(null);
         $httpProvider.defaults.headers.common['gumgaToken'] = 'testereport'

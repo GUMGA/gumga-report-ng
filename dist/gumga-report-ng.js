@@ -207,8 +207,8 @@ function gumgaReports($scope, $window, gumgaController, $, $timeout, $gumgaRepor
                 var databaseOracleExample = new Stimulsoft.Report.Dictionary.StiOracleDatabase("Security Oracle", "", "url=jdbc:oracle:thin:@localhost:1521/orcl;user = root;password = senha;", false);
 
                 report.dictionary.databases.clear();
-                var parameter = new Stimulsoft.Report.Dictionary.StiVariable("Gumga Examples", "oi", "oi", "Organization ID", Stimulsoft.System.Type.valueOf(), "[[oi]]", true, Stimulsoft.Report.Dictionary.StiVariableInitBy.Value, false);
-                report.dictionary.variables.add(parameter);
+                // var parameter = new Stimulsoft.Report.Dictionary.StiVariable("Gumga Examples", "oi", "oi", "Organization ID", Stimulsoft.System.Type.valueOf(), "[[oi]]", true, Stimulsoft.Report.Dictionary.StiVariableInitBy.Value, false);
+                // report.dictionary.variables.add(parameter)
 
                 if (ctrl.dictionaryDatabases) {
                     if (ctrl.dictionaryDatabases instanceof Array) {

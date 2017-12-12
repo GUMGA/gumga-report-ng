@@ -35,16 +35,16 @@
           <div class="row">
               <div class="col-xs-12">
                   <h2>Descrição</h2>
-                  <p>O componente gumgaReport foi criado no intuito de facilitar o desenvolvimento de relatórios utilizando a ferramenta Stimulsoft.</p>
+                  <p>O componente gumgaReport foi criado no intuito de facilitar o desenvolvimento de relatórios utilizando a ferramenta Gumga Report.</p>
               </div>
           </div>
           <div class="row">
               <div class="col-xs-12">
                   <h3>Observações</h3>
-                  <p>Como este componente depende diretamente da aplicação Stimulsoft, é necessário fazer a Importação dos arquivos 
+                  <p>Como este componente depende diretamente da aplicação Gumga Report, é necessário fazer a Importação dos arquivos
                       javascript e css que estão no diretório de instalação do componente. No exemplo de instalação ao lado está descrito
                       também o caminho do arquivo de estilização do visualizador e do editor, entretanto é possível utilizar outros temas conforme
-                      desejado, pois os mesmos podem ser encontrados dentro do diretório listado <i>(gumga-report-ng/dist/stimulsoft/css/**temas**)</i>.
+                      desejado, pois os mesmos podem ser encontrados dentro do diretório listado <i>(gumga-report-ng/dist/gumgareport/css/**temas**)</i>.
                       <b>Utilize 'obj' como alias para suas consultas SQL, para que ocorra a filtragem pelo ID da organização.</b>
                   </p>
               </div>
@@ -62,7 +62,7 @@ bower install gumga-report-ng --save
 angular.module('yourApp', ['gumga.report']);
 
 // Importação das dependências do componente pelo npm
-//------------------- Arquivos do stimulsoft ------------------//
+//------------------- Arquivos do Gumga Report ------------------//
 &lt;script src="node_modules/gumga-report-ng/dist/stimulsoft/js/stimulsoft.reports.pack.js">&lt;/script>
 
 &lt;script src="node_modules/gumga-report-ng/dist/stimulsoft/js/stimulsoft.viewer.pack.js">&lt;/script>
@@ -77,7 +77,7 @@ angular.module('yourApp', ['gumga.report']);
 &lt;script src="node_modules/gumga-report-ng/dist/gumga-report-ng.min.js"&gt;&lt;/script&gt;
 
 // Importação das dependências do componente pelo bower
-//-------------------- Arquivos do stimulsoft -----------------//
+//-------------------- Arquivos do Gumga Report -----------------//
 &lt;script src="bower_components/gumga-report-ng/dist/stimulsoft/js/stimulsoft.reports.pack.js">&lt;/script>
 
 &lt;script src="bower_components/gumga-report-ng/dist/stimulsoft/js/stimulsoft.viewer.pack.js">&lt;/script>
@@ -126,7 +126,7 @@ angular.module('yourApp', ['gumga.report']);
                   <pre><code class="prettyprint">
                       
     var api = "http://localhost/minha-api"
-    angular.module('app', ['ngGumgaReport', 'gumga.rest', 'gumga.controller'])
+    angular.module('app', ['gumga.report', 'gumga.rest', 'gumga.controller'])
     .config(function ($httpProvider, $gumgaReportProvider) {
 
         /** Localização da api **/
@@ -192,7 +192,7 @@ angular.module('yourApp', ['gumga.report']);
               <td><code>Object</code></td>
               <td>Não</td>
               <td>
-                Com este atributo é possível personalizar opções do Stimulsoft, dentre elas são exemplos: tamanho, disposição, menus, barra de ferramentas, dentre outras.
+                Com este atributo é possível personalizar opções do Gumga Report, dentre elas são exemplos: tamanho, disposição, menus, barra de ferramentas, dentre outras.
                 Para visualizar um exemplo de objeto clique aqui
                 <b style="cursor: pointer; color: #366591;" class="glyphicon glyphicon-plus" data-toggle="collapse" data-target="#demo" ></b>.
                 <div id="demo" class="collapse">
@@ -445,7 +445,7 @@ angular.module('yourApp', ['gumga.report']);
         apiLocation: 'http://localhost/minha-api'
     }
     </code></pre>
-                        Entretanto, as conexões do Stimulsoft precisam que seja configurada esta propriedade.
+                        Entretanto, as conexões do Gumga Report precisam que seja configurada esta propriedade.
                     </td>
                 </tr>
                 <tr>
@@ -458,7 +458,7 @@ angular.module('yourApp', ['gumga.report']);
                     <td><strong>$gumgaReportProvider.setLicenseKey(null);</strong></td>
                     <td><code>String</code></td>
                     <td>Não</td>
-                    <td>Configure sua licensa do Stimulsoft.</td>
+                    <td>Configure sua licensa do Gumga Report.</td>
                 </tr>
                 <tr>
                     <td><strong>$gumgaReportProvider.setLocalizationLang('dist/stimulsoft/langs/pt-BR.xml');</strong></td>

@@ -27,5 +27,6 @@ angular.module('app', ['gumga.report', 'gumga.rest', 'gumga.controller'])
         $gumgaReportProvider.setAPILocation({apiLocation:'https://report.gumga.io/reportservice-api'})
         $gumgaReportProvider.setToken('testereport')
         $gumgaReportProvider.setLicenseKey(null);
+        $gumgaReportProvider.setLocalizationLang('dist/stimulsoft/langs/pt-BR.xml');
         $httpProvider.defaults.headers.common['gumgaToken'] = 'testereport'
     })
